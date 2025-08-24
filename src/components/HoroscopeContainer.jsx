@@ -1,8 +1,12 @@
 import React, {useEffect} from 'react'
-import {View, Text, ActivityIndicator, TouchableOpacity, Button, StyleSheet} from 'react-native'
+import {View, Text, ActivityIndicator, TouchableOpacity, Image, StyleSheet} from 'react-native'
 import {useDispatch, useSelector} from 'react-redux'
 import {fetchHoroscope} from '../store/horoscopeStore'
 import {useNavigation} from "@react-navigation/native";
+import {DataCard} from "./base/card";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {ECacheKeys} from "../utils/cacheKeys";
+import {setActiveZodiac} from "../store/zodiacStore";
 
 export const HoroscopeContainer = () => {
     const navigation = useNavigation()
@@ -12,8 +16,27 @@ export const HoroscopeContainer = () => {
     const todayHoroscope = horoscope
     const activeZodiac = useSelector((state) => state.zodiac.activeZodiac)
 
+    const handleActiveZodiac = async () => {
+        try {
+            const storedZodiac = await AsyncStorage.getItem(ECacheKeys.ACTIVE_ZODIAC);
+
+            if (storedZodiac) {
+                dispatch(setActiveZodiac(storedZodiac))
+            } else {
+                navigation.navigate('ZodiacSelector')
+            }
+        } catch (error) {
+            console.error('Error fetching from storage:', error);
+        }
+    };
+
+
     useEffect(() => {
-        dispatch(fetchHoroscope(activeZodiac))
+        if (!activeZodiac) {
+            handleActiveZodiac()
+        } else {
+            dispatch(fetchHoroscope(activeZodiac))
+        }
     }, [dispatch, activeZodiac])
 
     const renderLoadingState = () => {
@@ -35,12 +58,7 @@ export const HoroscopeContainer = () => {
             </Text>
             <TouchableOpacity
                 onPress={() => dispatch(fetchHoroscope())}
-                style={{
-                    backgroundColor: "#6c63ff",
-                    paddingVertical: 12,
-                    paddingHorizontal: 24,
-                    borderRadius: 10,
-                }}
+                style={styles.button}
             >
                 <Text style={{color: "#fff", fontSize: 16}}>Retry</Text>
             </TouchableOpacity>
@@ -55,19 +73,11 @@ export const HoroscopeContainer = () => {
 
 
     const renderCard = () => {
-        return <View style={styles.cardContainer}>
-            <Text
-                style={styles.zodiacSign}
-            >
-                {todayHoroscope.sign ?? ""}
-            </Text>
-            <Text style={styles.cardDate}>
-                {todayHoroscope.date ?? ""}
-            </Text>
-            <Text style={{fontSize: 16, lineHeight: 24, color: "#333"}}>
-                {todayHoroscope.horoscope ?? ""}
-            </Text>
-        </View>
+        return <DataCard
+            title={todayHoroscope.sign}
+            date={todayHoroscope.date}
+            content={todayHoroscope.horoscope}
+        />
     }
 
     return (
@@ -93,8 +103,31 @@ export const HoroscopeContainer = () => {
                 renderCard()
                 : null
             }
-
-            <Button title={'Change Zodiac'} onPress={() => navigation?.navigate('ZodiacSelector')}/>
+            <View style={{marginTop: 24}}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => navigation?.navigate('ZodiacSelector')}>
+                    <Text>Switch Zodiac</Text>
+                </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+                onPress={() => navigation.navigate('Jounal')}
+                style={{
+                    position: 'absolute',
+                    bottom: 40,
+                    right: 40,
+                    height: 60,
+                    width: 60,
+                    borderRadius: 30,
+                    backgroundColor: "#6c63ff",
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}>
+                <Image
+                    source={require('../assets/images/journal.png')}
+                    style={{width: 35, height: 35}}
+                />
+            </TouchableOpacity>
         </View>
     )
 }
@@ -111,31 +144,17 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         color: "#978e8e"
     },
-    cardContainer: {
-        backgroundColor: "#c6c0c0",
-        padding: 20,
-        borderRadius: 16,
-        shadowColor: "#000",
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        shadowOffset: {width: 0, height: 2},
-        elevation: 4,
-    },
-    zodiacSign: {
-        fontSize: 22,
-        fontWeight: "700",
-        marginBottom: 8,
-        color: "#6c63ff",
-    },
-    cardDate: {
-        fontSize: 14,
-        color: "#333",
-        marginBottom: 12
-    },
     noDataText: {
         color: "#978e8e",
         fontSize: 16,
         marginBottom: 10
+    },
+    button: {
+        backgroundColor: "#6c63ff",
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 10,
+        alignItems: 'center'
     }
 
 });

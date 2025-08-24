@@ -16,14 +16,11 @@ export const fetchHoroscope = createAsyncThunk(
                 const cachedDate = parsedHoroscope.date
                 dayjs.extend(isToday);
                 if (dayjs(cachedDate).isToday()) {
-                    console.log("returning from cache")
-                    console.log("parsedHoroscope", parsedHoroscope)
                     return parsedHoroscope.horoscope
                 }
             }
             const data = await fetchTodayHoroscope(zodiacSign)
             const dataToCache = {date: dayjs(), horoscope: data}
-            console.log("Storing in cache")
             AsyncStorage.setItem(ECacheKeys.TODAY_HOROSCOPE, JSON.stringify(dataToCache))
             return data
         } catch (error) {

@@ -12,7 +12,6 @@ const zodiacSlice = createSlice({
     reducers: {
         setActiveZodiac: (state, action) => {
             state.activeZodiac = action.payload
-            AsyncStorage.removeItem(ECacheKeys.TODAY_HOROSCOPE)
         },
     },
 })

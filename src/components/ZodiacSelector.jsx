@@ -1,9 +1,11 @@
-import {Button, Dimensions, FlatList, StyleSheet, Text, View} from "react-native";
+import {Button, Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import React, {useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {useNavigation} from "@react-navigation/native";
 import {setActiveZodiac} from "../store/zodiacStore";
 import {EZodiacs} from "../utils/zodiacs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {ECacheKeys} from "../utils/cacheKeys";
 
 const {width} = Dimensions.get("window");
 const ITEM_WIDTH = width * 0.3;
@@ -33,6 +35,8 @@ export const ZodiacSelector = () => {
 
     const handleBtnClick = () => {
         dispatch(setActiveZodiac(selectedZodiac))
+        AsyncStorage.setItem(ECacheKeys.ACTIVE_ZODIAC, selectedZodiac)
+        AsyncStorage.removeItem(ECacheKeys.TODAY_HOROSCOPE)
         navigation.goBack()
     }
 
@@ -62,7 +66,13 @@ export const ZodiacSelector = () => {
         <View style={{flex: 1, alignItems: 'center', marginBottom: 48}}>
             <View style={styles.centerIndicator}/>
         </View>
-        <Button title={'Switch sign'} onPress={() => handleBtnClick()}/>
+        <View style={{marginTop: 24}}>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleBtnClick()}>
+                <Text>Select Zodiac</Text>
+            </TouchableOpacity>
+        </View>
 
     </View>
 }
@@ -88,5 +98,13 @@ const styles = StyleSheet.create({
         backgroundColor: "red",
         borderRadius: 2,
         alignItems: 'center',
+    },
+    button: {
+        backgroundColor: "#6c63ff",
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginHorizontal: 16
     }
 });
