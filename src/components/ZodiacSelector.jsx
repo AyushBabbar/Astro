@@ -13,7 +13,7 @@ const zodiacSigns = Object.keys(EZodiacs);
 export const ZodiacSelector = () => {
 
     const flatListRef = useRef(null);
-    const [selectedZodiac, setSelectedZodiac] = useState()
+    const [selectedZodiac, setSelectedZodiac] = useState(zodiacSigns[0])
     const dispatch = useDispatch()
     const navigation = useNavigation()
 

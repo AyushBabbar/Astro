@@ -21,7 +21,6 @@ export const Header = (props) => {
             style={{
                 backgroundColor: "rgba(12, 11, 24,1)",
                 paddingTop: insets.top,
-                opacity: 0.8,
                 paddingBottom: 24
             }}
         >
@@ -39,10 +38,12 @@ export const Header = (props) => {
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        paddingVertical: 4
+                        paddingVertical: 4,
+                        paddingTop: 4,
+
                     }}
                 >
-                    {canGoBack() ?? hideBackBtn ? <TouchableOpacity
+                    {canGoBack() && !hideBackBtn ? <TouchableOpacity
                         style={{flex: 0, zIndex: 2}}
                         onPress={backToPrevious}
                     >
@@ -61,7 +62,6 @@ export const Header = (props) => {
                                 style={{
                                     textAlign: "center",
                                     color: '#978e8e',
-                                    paddingTop: 4,
                                     fontSize: 24
                                 }}
                             >
