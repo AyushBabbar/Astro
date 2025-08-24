@@ -3,6 +3,7 @@ import * as React from "react";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {HomeScreen} from "../screens/HomeScreen";
 import {JournalScreen} from "../screens/JournalScreen";
+import {ZodiacSelectorScreen} from "../screens/ZodiacSelectorScreen";
 
 
 export const RootNavigator = () => {
@@ -13,6 +14,10 @@ export const RootNavigator = () => {
             <Stack.Screen
                 name="Home"
                 component={HomeScreen}
+            />
+            <Stack.Screen
+                name="ZodiacSelector"
+                component={ZodiacSelectorScreen}
             />
             <Stack.Screen
                 name="Jounal"

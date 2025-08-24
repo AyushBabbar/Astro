@@ -1,8 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
-import counterReducer from './counterSlice'
+import horoscopeReducer from '../store/horoscopeStore'
+import zodiacReducer from '../store/zodiacStore'
+
 
 export const rootStore = configureStore({
     reducer: {
-        counter: counterReducer,
+        horoscope: horoscopeReducer,
+        zodiac: zodiacReducer,
     },
 })

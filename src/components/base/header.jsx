@@ -7,7 +7,7 @@ import {
 
 
 export const Header = (props) => {
-    const {title} = props;
+    const {title, hideBackBtn} = props;
     const {goBack, canGoBack} = useNavigation();
     const insets = useSafeAreaInsets();
     const backToPrevious = () => {
@@ -39,14 +39,15 @@ export const Header = (props) => {
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
+                        paddingVertical: 4
                     }}
                 >
-                    <TouchableOpacity
-                        style={{flex: 0, paddingVertical: 4, zIndex: 2}}
+                    {canGoBack() ?? hideBackBtn ? <TouchableOpacity
+                        style={{flex: 0, zIndex: 2}}
                         onPress={backToPrevious}
                     >
-                        <Text style={{color: 'red'}}>BACK</Text>
-                    </TouchableOpacity>
+                        <Text style={{color: '#978e8e', fontSize: 24}}>{'<'}</Text>
+                    </TouchableOpacity> : <></>}
 
                     <View
                         style={{
@@ -59,8 +60,9 @@ export const Header = (props) => {
                             <Text
                                 style={{
                                     textAlign: "center",
-                                    color: 'red',
-                                    fontSize: 20
+                                    color: '#978e8e',
+                                    paddingTop: 4,
+                                    fontSize: 24
                                 }}
                             >
                                 {title}
